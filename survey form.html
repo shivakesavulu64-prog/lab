@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Interactive Survey Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #3d9aa7;
+        }
+        .container {
+            width: 450px;
+            margin: 40px auto;
+            background: rgb(65, 46, 117);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgb(138, 57, 57);
+        }
+        h2 {
+            text-align: center;
+        }
+        label {
+            font-weight: bold;
+        }
+        input, select, textarea, button {
+            width: 100%;
+            margin: 8px 0;
+            padding: 8px;
+        }
+        button {
+            background: #63811d;
+            color: rgb(13, 15, 17);
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #e9e4e4;
+        }
+        .output {
+            margin-top: 15px;
+            background: #a33c3c;
+            padding: 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>interactive Survey Form</h2>
+
+    <form id="surveyForm">
+        <label>Name:</label>
+        <input type="text" id="name" required>
+
+        <label>Age:</label>
+        <input type="number" id="age" required>
+
+        <label>Gender:</label>
+        <select id="gender" required>
+            <option value="">--Select--</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Other</option>
+        </select>
+
+        <label>Course:</label>
+        <input type="text" id="course">
+
+        <label>Feedback:</label>
+        <textarea id="feedback"></textarea>
+
+        <button type="submit">Submit Survey</button>
+    </form>
+
+    <button onclick="showData()">View Saved Data</button>
+    <button onclick="clearData()">Clear Data</button>
+
+    <div class="output" id="output"></div>
+</div>
+
+<script>
+    const form = document.getElementById("surveyForm");
+
+    form.addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const surveyData = {
+            name: document.getElementById("name").value,
+            age: document.getElementById("age").value,
+            gender: document.getElementById("gender").value,
+            course: document.getElementById("course").value,
+            feedback: document.getElementById("feedback").value,
+            time: new Date().toLocaleString()
+        };
+
+        let data = JSON.parse(localStorage.getItem("surveyResponses")) || [];
+        data.push(surveyData);
+
+        localStorage.setItem("surveyResponses", JSON.stringify(data));
+
+        alert("Survey data saved locally!");
+        form.reset();
+    });
+
+    function showData() {
+        const output = document.getElementById("output");
+        let data = JSON.parse(localStorage.getItem("surveyResponses")) || [];
+
+        if (data.length === 0) {
+            output.innerHTML = "No data stored.";
+            return;
+        }
+
+        output.innerHTML = "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
+    }
+
+    function clearData() {
+        localStorage.removeItem("surveyResponses");
+        document.getElementById("output").innerHTML = "";
+        alert("All survey data cleared!");
+    }
+</script>
+
+</body>
+</html>
